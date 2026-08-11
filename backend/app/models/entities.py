@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import date, datetime
 
-from sqlalchemy import Boolean, Date, DateTime, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import Boolean, Date, DateTime, Float, ForeignKey, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship as orm_relationship
 
 from app.db.session import Base
@@ -192,3 +192,103 @@ class PendingAction(Base):
     payload: Mapped[str] = mapped_column(Text, default="{}")
     status: Mapped[str] = mapped_column(String(20), default="pending")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=now)
+
+
+class MemberHealthSetting(Base, TimestampMixin):
+    __tablename__ = "member_health_settings"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    member_id: Mapped[int] = mapped_column(ForeignKey("family_members.id"), unique=True, index=True)
+    western_prevention_enabled: Mapped[bool] = mapped_column(Boolean, default=True)
+    tcm_health_enabled: Mapped[bool] = mapped_column(Boolean, default=False)
+    tcm_enabled_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    tcm_consent_version: Mapped[str | None] = mapped_column(String(30), nullable=True)
+    tcm_depth: Mapped[str] = mapped_column(String(20), default="basic")
+
+
+class HealthAnalysisRun(Base):
+    __tablename__ = "health_analysis_runs"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    member_id: Mapped[int] = mapped_column(ForeignKey("family_members.id"), index=True)
+    engine: Mapped[str] = mapped_column(String(30), index=True)
+    period_days: Mapped[int] = mapped_column(Integer)
+    current_start: Mapped[datetime] = mapped_column(DateTime)
+    current_end: Mapped[datetime] = mapped_column(DateTime)
+    baseline_start: Mapped[datetime] = mapped_column(DateTime)
+    baseline_end: Mapped[datetime] = mapped_column(DateTime)
+    engine_version: Mapped[str] = mapped_column(String(30))
+    rule_set_version: Mapped[str] = mapped_column(String(30))
+    trigger_type: Mapped[str] = mapped_column(String(40), default="manual")
+    trigger_source_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    generated_at: Mapped[datetime] = mapped_column(DateTime, default=now, index=True)
+
+
+class HealthAnalysisResult(Base):
+    __tablename__ = "health_analysis_results"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    run_id: Mapped[int] = mapped_column(ForeignKey("health_analysis_runs.id"), index=True)
+    category: Mapped[str] = mapped_column(String(50), index=True)
+    status: Mapped[str] = mapped_column(String(40))
+    trend: Mapped[str] = mapped_column(String(20), default="unknown")
+    risk_level: Mapped[str] = mapped_column(String(30), index=True)
+    summary: Mapped[str] = mapped_column(Text)
+    uncertainty: Mapped[str] = mapped_column(Text, default="[]")
+    suggestion: Mapped[str] = mapped_column(Text, default="[]")
+    escalation_action: Mapped[str] = mapped_column(String(50), default="continue_monitoring")
+    rule_ids: Mapped[str] = mapped_column(Text, default="[]")
+
+
+class HealthEvidence(Base):
+    __tablename__ = "health_evidence"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    result_id: Mapped[int] = mapped_column(ForeignKey("health_analysis_results.id"), index=True)
+    source_type: Mapped[str] = mapped_column(String(40), index=True)
+    source_id: Mapped[str] = mapped_column(String(120))
+    recorded_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    original_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    summary: Mapped[str] = mapped_column(Text)
+    confirmed_by_user: Mapped[bool] = mapped_column(Boolean, default=False)
+    confidence: Mapped[str] = mapped_column(String(20), default="medium")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=now)
+
+
+class MedicalRule(Base, TimestampMixin):
+    __tablename__ = "medical_rules"
+    __table_args__ = (UniqueConstraint("rule_id", "rule_version", name="uq_medical_rule_version"),)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    rule_id: Mapped[str] = mapped_column(String(80), index=True)
+    rule_name: Mapped[str] = mapped_column(String(160))
+    rule_version: Mapped[str] = mapped_column(String(30))
+    category: Mapped[str] = mapped_column(String(50), index=True)
+    condition: Mapped[str] = mapped_column(Text)
+    risk_level: Mapped[str] = mapped_column(String(30))
+    escalation_action: Mapped[str] = mapped_column(String(50))
+    source: Mapped[str] = mapped_column(Text)
+    reviewed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    enabled: Mapped[bool] = mapped_column(Boolean, default=True)
+
+
+class PreventionItem(Base, TimestampMixin):
+    __tablename__ = "prevention_items"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    member_id: Mapped[int] = mapped_column(ForeignKey("family_members.id"), index=True)
+    title: Mapped[str] = mapped_column(String(180))
+    category: Mapped[str] = mapped_column(String(60), index=True)
+    reason: Mapped[str] = mapped_column(Text)
+    due_date: Mapped[date | None] = mapped_column(Date, nullable=True)
+    status: Mapped[str] = mapped_column(String(30), default="unknown", index=True)
+    source_type: Mapped[str] = mapped_column(String(40))
+    source_reference: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    rule_id: Mapped[str | None] = mapped_column(String(80), nullable=True)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+
+class HealthLogRevision(Base):
+    __tablename__ = "health_log_revisions"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    health_log_id: Mapped[int] = mapped_column(ForeignKey("health_logs.id"), index=True)
+    member_id: Mapped[int] = mapped_column(ForeignKey("family_members.id"), index=True)
+    previous_raw_text: Mapped[str] = mapped_column(Text)
+    previous_log_type: Mapped[str] = mapped_column(String(40))
+    previous_structured_data: Mapped[str] = mapped_column(Text)
+    previous_possible_emergency: Mapped[bool] = mapped_column(Boolean)
+    revised_at: Mapped[datetime] = mapped_column(DateTime, default=now)

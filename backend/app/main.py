@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import contacts, documents, feishu, health_logs, measurements, medication_courses, members, notifications, tasks, visits, voice
+from app.api import contacts, documents, feishu, health_guard, health_logs, measurements, medication_courses, members, notifications, tasks, visits, voice
 from app.core.config import settings
 from app.db.seed import seed_demo
 from app.db.session import Base, SessionLocal, engine
@@ -26,7 +26,7 @@ async def lifespan(_: FastAPI):
 
 app = FastAPI(
     title="家医 · 家庭健康管家 API",
-    version="0.1.0",
+    version="0.2.0",
     description="聊天产生数据，而不是为了数据聊天。AI 负责整理，不替代医生诊断。",
     lifespan=lifespan,
 )
@@ -39,10 +39,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-for router in (members.router, health_logs.router, medication_courses.router, measurements.router, visits.router, documents.router, tasks.router, contacts.router, notifications.router, voice.router, feishu.router):
+for router in (members.router, health_logs.router, health_guard.router, medication_courses.router, measurements.router, visits.router, documents.router, tasks.router, contacts.router, notifications.router, voice.router, feishu.router):
     app.include_router(router, prefix="/api")
 
 
 @app.get("/api/health")
 def health():
-    return {"status": "ok", "app": settings.app_name, "version": "0.1.0", "llm_provider": settings.llm_provider, "feishu_provider": settings.feishu_provider, "phone_provider": settings.phone_provider}
+    return {"status": "ok", "app": settings.app_name, "version": "0.2.0", "llm_provider": settings.llm_provider, "feishu_provider": settings.feishu_provider, "phone_provider": settings.phone_provider}

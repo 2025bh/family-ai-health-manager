@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.models.entities import Measurement
 from app.schemas.common import MeasurementCreate
+from app.services.western_prevention import WesternPreventionEngine
 
 router = APIRouter(prefix="/measurements", tags=["健康测量"])
 
@@ -20,5 +21,5 @@ def create_measurement(payload: MeasurementCreate, db: Session = Depends(get_db)
     db.add(row)
     db.commit()
     db.refresh(row)
+    WesternPreventionEngine().recompute(db, row.member_id, "measurement_created", row.id)
     return row
-

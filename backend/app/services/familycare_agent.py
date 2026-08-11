@@ -38,6 +38,14 @@ class FamilyCareAgent:
             reply = self.safety.emergency_reply()
             self._message(db, member_id, session_id, "assistant", reply, "SAFETY_ESCALATION")
             return VoiceMessageOut(session_id=session_id, intent="SAFETY_ESCALATION", reply=reply, possible_emergency=True, actions=[{"type": "contact_family"}, {"type": "contact_medical_service"}])
+        if safety.subject == "other":
+            reply = "这句话描述的是其他家人的情况，我不会把它记到当前成员名下。请先切换到对应家庭成员，或告诉我具体是谁。"
+            self._message(db, member_id, session_id, "assistant", reply, "SUBJECT_CLARIFICATION")
+            return VoiceMessageOut(session_id=session_id, intent="SUBJECT_CLARIFICATION", reply=reply)
+        if safety.status in ("hypothetical", "question"):
+            reply = "我理解这是一个假设或健康问题，不会把它当作你当前正在发生的症状记录。如果你正在出现相关情况，请明确告诉我发生时间和当前状态。"
+            self._message(db, member_id, session_id, "assistant", reply, "HEALTH_QUESTION")
+            return VoiceMessageOut(session_id=session_id, intent="HEALTH_QUESTION", reply=reply)
 
         pending = db.scalar(select(PendingAction).where(PendingAction.member_id == member_id, PendingAction.session_id == session_id, PendingAction.status == "pending").order_by(desc(PendingAction.created_at)).limit(1))
         if pending:
@@ -161,4 +169,3 @@ class FamilyCareAgent:
     @staticmethod
     def _context_label(value: str) -> str:
         return {"fasting": "空腹", "post_meal": "饭后", "random": "随机", "unknown": "不清楚"}.get(value, value)
-

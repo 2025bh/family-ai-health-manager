@@ -5,10 +5,11 @@ from sqlalchemy import desc, select
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
-from app.models.entities import HealthLog
+from app.models.entities import HealthLog, HealthLogRevision
 from app.schemas.common import HealthLogCreate, HealthLogUpdate
 from app.services.health_parser import HealthLogParser
 from app.services.safety import SafetyService
+from app.services.western_prevention import WesternPreventionEngine
 
 router = APIRouter(prefix="/health-logs", tags=["健康日志"])
 
@@ -30,6 +31,7 @@ def create_log(payload: HealthLogCreate, db: Session = Depends(get_db)):
     db.add(row)
     db.commit()
     db.refresh(row)
+    WesternPreventionEngine().recompute(db, row.member_id, "health_log_created", row.id)
     return {"id": row.id, "raw_text_preserved": row.raw_text, "possible_emergency": row.possible_emergency}
 
 
@@ -40,10 +42,19 @@ def update_log(log_id: int, payload: HealthLogUpdate, db: Session = Depends(get_
         raise HTTPException(404, "健康记录不存在")
     parsed = HealthLogParser().parse(payload.raw_text.strip())
     risk = SafetyService().check_input(payload.raw_text)
+    db.add(HealthLogRevision(
+        health_log_id=row.id,
+        member_id=row.member_id,
+        previous_raw_text=row.raw_text,
+        previous_log_type=row.log_type,
+        previous_structured_data=row.structured_data,
+        previous_possible_emergency=row.possible_emergency,
+    ))
     row.raw_text = payload.raw_text.strip()
     row.log_type = parsed.log_type
     row.structured_data = json.dumps(parsed.structured_data, ensure_ascii=False)
     row.possible_emergency = risk.possible_emergency
     db.commit()
     db.refresh(row)
-    return {"id": row.id, "raw_text_preserved": row.raw_text, "structured_data": parsed.structured_data, "possible_emergency": row.possible_emergency}
+    recomputed = WesternPreventionEngine().recompute(db, row.member_id, "health_log_corrected", row.id)
+    return {"id": row.id, "raw_text_preserved": row.raw_text, "structured_data": parsed.structured_data, "possible_emergency": row.possible_emergency, "recomputed_periods": [x["period_days"] for x in recomputed["runs"]]}

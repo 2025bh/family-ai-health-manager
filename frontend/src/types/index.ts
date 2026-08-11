@@ -28,3 +28,44 @@ export type WeeklySummary = {
   measurement_count: number
   categories: WeeklyCategory[]
 }
+
+export type RiskLevel = 'insufficient_data' | 'green' | 'yellow' | 'red'
+export type HealthEvidence = { source_type: string; source_id: string; recorded_at?: string; original_text?: string; summary: string; confirmed_by_user: boolean; confidence: string }
+export type HealthAnalysisResult = {
+  id?: number
+  category: string
+  status: string
+  trend: 'improved' | 'stable' | 'worsened' | 'unknown'
+  risk_level: RiskLevel
+  summary: string
+  evidence: HealthEvidence[]
+  uncertainty: string[]
+  suggestion: string[]
+  escalation_action: string
+  rule_ids: string[]
+  current_period_days_with_records: number
+  baseline_period_days_with_records: number
+}
+export type HealthAnalysis = {
+  run_id?: number
+  member_id: number
+  engine: 'western'
+  enabled?: boolean
+  period_days?: 7 | 30
+  current_period?: { start: string; end: string }
+  baseline_period?: { start: string; end: string }
+  engine_version?: string
+  rule_set_version?: string
+  generated_at?: string
+  results: HealthAnalysisResult[]
+}
+export type HealthGuardSettings = {
+  member_id: number
+  western_prevention_enabled: boolean
+  tcm_health_enabled: boolean
+  tcm_enabled_at?: string
+  tcm_consent_version?: string
+  tcm_depth: 'basic' | 'deep'
+  medical_safety_always_enabled: true
+  tcm: { enabled: boolean; depth: string; status: string; message: string; analysis_available: boolean }
+}

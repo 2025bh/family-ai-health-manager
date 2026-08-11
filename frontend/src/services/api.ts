@@ -1,4 +1,4 @@
-import type { HealthDocumentItem, Member, TimelineItem, VoiceResponse, WeeklySummary } from '../types'
+import type { HealthAnalysis, HealthDocumentItem, HealthGuardSettings, Member, TimelineItem, VoiceResponse, WeeklySummary } from '../types'
 
 export const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
 
@@ -13,6 +13,10 @@ export const api = {
   member: (id: number) => request<Record<string, unknown>>(`/members/${id}`),
   timeline: (id: number) => request<TimelineItem[]>(`/members/${id}/timeline`),
   weeklySummary: (id: number, days = 7) => request<WeeklySummary>(`/members/${id}/weekly-summary?days=${days}`),
+  healthGuardAnalysis: (id: number, days: 7 | 30 = 7, refresh = false) => request<HealthAnalysis>(`/health-guard/analysis?member_id=${id}&days=${days}&refresh=${refresh}`),
+  healthGuardSettings: (id: number) => request<HealthGuardSettings>(`/health-guard/settings?member_id=${id}`),
+  updateHealthGuardSettings: (id: number, value: Record<string, unknown>) => request<HealthGuardSettings>(`/health-guard/settings?member_id=${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(value) }),
+  preventionItems: (id: number) => request<Array<Record<string, unknown>>>(`/health-guard/prevention-items?member_id=${id}`),
   voice: (memberId: number, text: string, sessionId?: string) => request<VoiceResponse>('/voice/message', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ member_id: memberId, text, session_id: sessionId }) }),
   visit: (id: number) => request<Record<string, unknown>>(`/visits/${id}`),
   visitReview: (id: number) => request<Record<string, any>>(`/visits/${id}/review`),

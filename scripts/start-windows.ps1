@@ -11,6 +11,15 @@ if (-not (Test-Path (Join-Path $frontendDir 'node_modules'))) {
     npm install --prefix $frontendDir
 }
 
+# 每次启动先执行增量迁移；Alembic 只升级未执行的版本，不覆盖既有健康资料。
+Push-Location $backendDir
+try {
+    & '.\.venv\Scripts\python.exe' -m alembic upgrade head
+}
+finally {
+    Pop-Location
+}
+
 Start-Process powershell -WindowStyle Hidden -WorkingDirectory $backendDir -ArgumentList '-NoProfile', '-Command', '.\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000'
 Start-Process powershell -WindowStyle Hidden -WorkingDirectory $frontendDir -ArgumentList '-NoProfile', '-Command', 'npm run dev'
 
