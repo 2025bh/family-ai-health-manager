@@ -1,0 +1,167 @@
+{
+  "version": "western-kb-2026.08.22",
+  "updated_at": "2026-08-22",
+  "disclaimer": "本知识库只用于健康记录、趋势观察和就医准备，不用于自行诊断、开药、停药或调整剂量。待复核内容不得参与自动分析。",
+  "items": [
+    {
+      "id": "WM-DM-001",
+      "title": "糖尿病家族史只表示风险增加，不等于本人确诊",
+      "category": "糖尿病·风险识别",
+      "audience": ["家庭成员", "健康管家", "医生沟通"],
+      "status": "待复核",
+      "risk_level": "高风险",
+      "customer_service_ready": false,
+      "enabled_for_analysis": false,
+      "tags": ["糖尿病", "家族史", "母亲", "爷爷", "筛查"],
+      "standard_answer": "一级亲属或多位近亲患糖尿病，应作为就医沟通和是否筛查的背景信息保存，但不能据此判断本人已经患糖尿病。是否需要化验、检查频率和结果解释应由医生结合年龄、症状、体重变化及其他风险因素决定。",
+      "review_notes": "黄金周目前体重偏低，不应自动套用减重型糖尿病预防建议。",
+      "sources": [
+        {
+          "publisher": "NICE",
+          "title": "Type 2 diabetes: prevention in people at high risk",
+          "code": "PH38",
+          "url": "https://www.nice.org.uk/guidance/ph38",
+          "local_file": "NICE-PH38-2型糖尿病高风险人群预防.pdf"
+        },
+        {
+          "publisher": "WHO",
+          "title": "Diabetes fact sheet",
+          "code": "WHO-DIABETES",
+          "url": "https://www.who.int/news-room/fact-sheets/detail/diabetes",
+          "local_file": null
+        }
+      ]
+    },
+    {
+      "id": "WM-DM-002",
+      "title": "糖尿病筛查和诊断必须区分家用测量与医疗检查",
+      "category": "糖尿病·筛查与诊断边界",
+      "audience": ["家庭成员", "健康管家", "医生沟通"],
+      "status": "待复核",
+      "risk_level": "高风险",
+      "customer_service_ready": false,
+      "enabled_for_analysis": false,
+      "tags": ["空腹血糖", "糖化血红蛋白", "口服葡萄糖耐量试验", "家用血糖仪"],
+      "standard_answer": "健康管家可以记录空腹血糖、餐后血糖和糖化血红蛋白等原始结果，但不应仅凭一次家用血糖测量给出诊断。异常结果需要由医疗专业人员结合实验室检查、症状和复测情况解释。",
+      "review_notes": "接入数值规则前必须确认测量类型、单位、是否空腹、设备来源和医生审核版本。",
+      "sources": [
+        {
+          "publisher": "NICE",
+          "title": "Type 2 diabetes: prevention in people at high risk",
+          "code": "PH38",
+          "url": "https://www.nice.org.uk/guidance/ph38/chapter/recommendations",
+          "local_file": "NICE-PH38-2型糖尿病高风险人群预防.pdf"
+        }
+      ]
+    },
+    {
+      "id": "WM-DM-003",
+      "title": "糖尿病相关饮食与运动建议必须个体化",
+      "category": "糖尿病·生活方式",
+      "audience": ["家庭成员", "健康管家", "医生沟通"],
+      "status": "待复核",
+      "risk_level": "高风险",
+      "customer_service_ready": false,
+      "enabled_for_analysis": false,
+      "tags": ["饮食", "运动", "体重偏低", "营养", "食养"],
+      "standard_answer": "合理膳食和适量运动有助于糖尿病预防与管理，但目标应结合个人营养状况、体重、用药和并发症确定。体重偏低、近期非主动减重或胃肠不适者，不应由系统自动建议减重或限制总能量。",
+      "review_notes": "本条特别用于防止把面向超重人群的减重建议错误套用于黄金周。",
+      "sources": [
+        {
+          "publisher": "国家卫生健康委员会",
+          "title": "成人糖尿病食养指南（2023年版）",
+          "code": "NHC-DIET-DM-2023",
+          "url": "https://www.nhc.gov.cn/cms-search/downFiles/4fcbecd2c18e46baaf291bf46c2b79cd.pdf",
+          "local_file": "国家卫健委-成人糖尿病食养指南-2023.pdf"
+        },
+        {
+          "publisher": "NICE",
+          "title": "Type 2 diabetes in adults: management",
+          "code": "NG28",
+          "url": "https://www.nice.org.uk/guidance/ng28",
+          "local_file": "NICE-NG28-成人2型糖尿病管理-2026.pdf"
+        }
+      ]
+    },
+    {
+      "id": "WM-DM-004",
+      "title": "已确诊2型糖尿病后的复查频率应按治疗稳定程度个体化",
+      "category": "糖尿病·长期管理",
+      "audience": ["已确诊成员", "健康管家", "医生沟通"],
+      "status": "待复核",
+      "risk_level": "高风险",
+      "customer_service_ready": false,
+      "enabled_for_analysis": false,
+      "tags": ["2型糖尿病", "糖化血红蛋白", "复查", "长期管理"],
+      "standard_answer": "对于已确诊2型糖尿病的成年人，糖化血红蛋白复查频率应结合治疗是否稳定和个人目标决定。NICE建议在指标或治疗尚未稳定时通常每3至6个月评估，稳定后通常每6个月评估；在中国实际使用时应以本人医生安排为准。",
+      "review_notes": "该频率不能用于未确诊成员，也不能替代医生随访计划。",
+      "sources": [
+        {
+          "publisher": "NICE",
+          "title": "Type 2 diabetes in adults: management",
+          "code": "NG28-1.5.1",
+          "url": "https://www.nice.org.uk/guidance/ng28/chapter/Blood-glucose-management",
+          "local_file": "NICE-NG28-成人2型糖尿病管理-2026.pdf"
+        }
+      ]
+    },
+    {
+      "id": "WM-DM-005",
+      "title": "糖尿病药物和胰岛素不得由健康管家自行调整",
+      "category": "糖尿病·用药安全",
+      "audience": ["已确诊成员", "健康管家", "医生沟通"],
+      "status": "待复核",
+      "risk_level": "高风险",
+      "customer_service_ready": false,
+      "enabled_for_analysis": false,
+      "tags": ["降糖药", "胰岛素", "停药", "换药", "剂量"],
+      "standard_answer": "健康管家只能记录药名、剂量、时间、血糖和不适反应，不能根据单次血糖或自然语言记录自行增减、停用或替换降糖药和胰岛素。药物方案必须由有资质的医疗专业人员结合血糖、肾功能、心血管风险及低血糖风险制定。",
+      "review_notes": "任何具体药物推荐都需另行建立有版本和审核人的规则。",
+      "sources": [
+        {
+          "publisher": "NICE",
+          "title": "Type 2 diabetes in adults: management",
+          "code": "NG28",
+          "url": "https://www.nice.org.uk/guidance/ng28",
+          "local_file": "NICE-NG28-成人2型糖尿病管理-2026.pdf"
+        },
+        {
+          "publisher": "NICE",
+          "title": "Type 1 diabetes in adults: diagnosis and management",
+          "code": "NG17",
+          "url": "https://www.nice.org.uk/guidance/ng17",
+          "local_file": "NICE-NG17-成人1型糖尿病诊断与管理.pdf"
+        }
+      ]
+    },
+    {
+      "id": "WM-DM-006",
+      "title": "严重低血糖或高血糖相关意识异常需要紧急升级",
+      "category": "糖尿病·安全提醒",
+      "audience": ["家庭成员", "健康管家", "紧急联系人"],
+      "status": "待复核",
+      "risk_level": "高风险",
+      "customer_service_ready": false,
+      "enabled_for_analysis": false,
+      "tags": ["低血糖", "高血糖", "意识不清", "抽搐", "昏迷", "急救"],
+      "standard_answer": "糖尿病患者出现意识不清、抽搐、昏迷或无法安全吞咽等情况时，应按紧急情况联系当地急救服务。系统不得让意识不清或无法吞咽者自行进食、饮水或服药。其他疑似低血糖或高血糖症状也需要结合实测血糖、用药和医生制定的个人应急方案处理。",
+      "review_notes": "正式启用前需由临床人员补充中国本地急救口径、测量阈值和排除条件。",
+      "sources": [
+        {
+          "publisher": "NICE",
+          "title": "Type 1 diabetes in adults: diagnosis and management",
+          "code": "NG17",
+          "url": "https://www.nice.org.uk/guidance/ng17/chapter/recommendations",
+          "local_file": "NICE-NG17-成人1型糖尿病诊断与管理.pdf"
+        },
+        {
+          "publisher": "WHO",
+          "title": "Diabetes fact sheet",
+          "code": "WHO-DIABETES",
+          "url": "https://www.who.int/news-room/fact-sheets/detail/diabetes",
+          "local_file": null
+        }
+      ]
+    }
+  ]
+}

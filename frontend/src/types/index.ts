@@ -69,3 +69,26 @@ export type HealthGuardSettings = {
   medical_safety_always_enabled: true
   tcm: { enabled: boolean; depth: string; status: string; message: string; analysis_available: boolean }
 }
+
+export type MedicalKnowledgeSource = { publisher: string; title: string; code: string; url: string; local_file?: string }
+export type MedicalKnowledgeItem = {
+  id: string
+  title: string
+  category: string
+  status: string
+  risk_level: string
+  enabled_for_analysis: boolean
+  tags: string[]
+  standard_answer: string
+  review_notes: string
+  sources: MedicalKnowledgeSource[]
+}
+export type MedicalKnowledge = {
+  version: string
+  updated_at: string
+  disclaimer: string
+  total: number
+  enabled_for_analysis: number
+  pending_review: number
+  items: MedicalKnowledgeItem[]
+}

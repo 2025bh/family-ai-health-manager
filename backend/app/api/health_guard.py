@@ -6,12 +6,14 @@ from app.db.session import get_db
 from app.models.entities import MedicalRule, PreventionItem
 from app.schemas.health_guard import HealthSettingUpdate, PreventionItemCreate, RecomputeRequest
 from app.services.health_settings import HealthSettingService
+from app.services.medical_knowledge import MedicalKnowledgeService
 from app.services.tcm_health import TcmHealthEngine
 from app.services.western_prevention import WesternPreventionEngine
 
 router = APIRouter(prefix="/health-guard", tags=["健康守护"])
 settings_service = HealthSettingService()
 western_engine = WesternPreventionEngine()
+knowledge_service = MedicalKnowledgeService()
 
 
 def setting_payload(row) -> dict:
@@ -66,6 +68,11 @@ def recompute(payload: RecomputeRequest, db: Session = Depends(get_db)):
 def list_rules(db: Session = Depends(get_db)):
     rows = db.scalars(select(MedicalRule).where(MedicalRule.enabled.is_(True)).order_by(MedicalRule.category, MedicalRule.rule_id))
     return [{"rule_id": x.rule_id, "rule_name": x.rule_name, "rule_version": x.rule_version, "category": x.category, "risk_level": x.risk_level, "escalation_action": x.escalation_action, "source": x.source, "reviewed_at": x.reviewed_at} for x in rows]
+
+
+@router.get("/knowledge")
+def list_medical_knowledge(topic: str | None = None):
+    return knowledge_service.list_items(topic)
 
 
 @router.get("/prevention-items")
